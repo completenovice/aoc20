@@ -1,3 +1,3 @@
-module github.com/completenovice/aoc20/utils
+module utils
 
 go 1.15
