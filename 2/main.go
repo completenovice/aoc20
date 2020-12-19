@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -45,7 +44,7 @@ func main() {
 	fmt.Println(validCount)
 }
 
-func parser(rule string) (int, int, string, string) {
+func parser(rule string) (int, int, string, []string) {
 	parts := strings.Split(rule, " ")
 
 	numRange := parts[0]
@@ -57,15 +56,20 @@ func parser(rule string) (int, int, string, string) {
 	ch := parts[1]
 	ch = strings.Split(ch, ":")[0]
 	pw := parts[2]
+	password := []string{}
+	for _, c := range []rune(pw) {
+		password = append(password, string(c))
+	}
 
-	return min, max, ch, pw
+	return min, max, ch, password
 }
 
-func isValid(min, max int, ch string, password string) bool {
-	var re = regexp.MustCompile(fmt.Sprintf("(%s)", ch))
-	count := len(re.FindAllString(password, -1))
-	fmt.Printf("Checking '%s' in '%s' occurs more than %d and less than %d\n", ch, password, min, max)
-	if count >= min && count <= max {
+func isValid(min, max int, ch string, password []string) bool {
+	fmt.Printf("Checking '%s' in '%s' is in position %d and less than %d\n", ch, password, min, max)
+	if ch == password[min-1] && ch == password[max-1] {
+		return false
+	}
+	if ch == password[min-1] || ch == password[max-1] {
 		fmt.Println("yep!")
 		return true
 	}
